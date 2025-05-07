@@ -16,7 +16,7 @@ public class Main {
     public static void main(String[] args) throws LexicalException, IOException, SyntaxExeption {
         SymbolTable symbolTable = new SymbolTable();
 
-        //  -------------------
+        //  ------------------- d
         Lexer lexer = new Lexer();
         String archivo = readFileFromResources("examples/definition.puml");
 
