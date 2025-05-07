@@ -72,7 +72,7 @@ public class Parser {
         if (pumlDiagram()) {
             if (tokenIndex == tokens.size()) {
                 String message = "\nLa sintaxis del programa es correcta";
-                System.out.println(message);
+                // System.out.println(message);
                 return;
             }
         }

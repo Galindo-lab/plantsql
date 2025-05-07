@@ -16,34 +16,35 @@ public class Main {
     public static void main(String[] args) throws LexicalException, IOException, SyntaxExeption {
         SymbolTable symbolTable = new SymbolTable();
 
-        //  -------------------
+        //  ------------------- d
         Lexer lexer = new Lexer();
         String archivo = readFileFromResources("examples/definition.puml");
 
         lexer.analyze(archivo);
-        Lexer.printTokens(lexer);
+        // Lexer.printTokens(lexer);
 
 
         // -----------------
-        System.out.println("\n\n\n");
-        System.out.println("**** Analysis sintactico ****");
+        // System.out.println("\n\n\n");
+        // System.out.println("**** Analysis sintactico ****");
         Parser parser = new Parser(symbolTable);
         parser.analyze(lexer);
 
 
         // ----------------
-        System.out.println("\n\n\n");
-        SymbolTable.printSymbolTable(symbolTable);
+        // System.out.println("\n\n\n");
+        // SymbolTable.printSymbolTable(symbolTable);
 
 
         // -----------
-        System.out.println("\n\n\n");
-        System.out.println("**** Codigo SQl ****");
+        // System.out.println("\n\n\n");
+        // System.out.println("**** Codigo SQl ****");
         Generator generator = new Generator(symbolTable);
         try {
             generator.generate(lexer);
+            System.out.println(generator.getOutput());
         } catch (SemanticException e) {
-            System.out.println("EEEEEEEEEEEEEEE");
+            System.out.println(e);
         }
 
 
