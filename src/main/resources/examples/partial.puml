@@ -1,0 +1,84 @@
+@startuml
+
+'TIPOS SOPORTADOS
+'INTEGER - Entero estándar (32 bits)
+'FLOAT - Número de punto flotante (precisión simple)
+'STRING - Para textos largos (hasta ~65KB)
+'DATE - Solo fecha (YYYY-MM-DD)
+'DATETIME - Fecha y hora (YYYY-MM-DD HH:MM:SS)
+'TIMESTAMP - Marca de tiempo (similar a DATETIME pero con auto-actualización)
+
+' si un attributo tiene '*' al inicio es obligatorio
+' si esta arriba de '--' es que es llave primaria
+
+'MODIFICADORES SOPORTADOS los que van entre <<>>
+'FK - llave foranea
+'unique - unico
+'generated - autogenerado
+
+' Entidades
+entity Order {
+    * order_id : integer <<generated>>
+    --
+    * customer_id : integer <<FK>>
+    * shipping_address_id : integer <<FK>>
+    fecha : datetime
+    estado : string
+    total : integer
+}
+
+entity "Cliente" as Customer {
+    * customer_id : integer <<generated>>
+    --
+    dni : string
+    nombre : string
+    email : string
+    fecha_registro : date
+}
+
+entity "Producto" as Product {
+    * product_id : integer <<generated>>
+    --
+    * category_id : integer <<FK>>
+    codigo : string
+    nombre : string
+    precio : integer
+    stock : integer
+}
+
+entity "Categoría" as Category {
+    * category_id : integer <<generated>>
+    --
+    **nombre** : string <<unique>>
+    descripcion : string
+}
+
+entity "Detalle de Orden" as OrderItem {
+    * order_item_id : integer <<generated>>
+    --
+    * order_id : integer <<FK>>
+    * product_id : integer <<FK>>
+    cantidad : integer
+    precio_unitario : float
+}
+
+entity "Dirección" as Address {
+    * address_id : integer <<generated>>
+    --
+    * customer_id : integer <<FK>>
+    calle : string
+    ciudad : string
+    codigo_postal : string
+}
+
+
+
+' Relaciones
+Customer ||--o{ Order : "realiza"
+Customer ||--o{ Address : "tiene"
+Order ||--|{ OrderItem : "contiene"
+ProductCustomerdsafdsfsd }o--|{ OrderItem : "incluido en"
+Product }|--|| Category : "pertenece a"
+Order |o--|| Address : "envío a" as shipping_address
+
+@enduml

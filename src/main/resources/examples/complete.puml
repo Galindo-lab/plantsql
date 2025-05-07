@@ -1,0 +1,98 @@
+@startuml
+' Configuración para mejor visualización
+hide circle
+skinparam linetype ortho
+
+' Entidades
+entity Customer {
+    *customer_id : integer <<PK, generated>>
+    --
+    **dni** : varchar(20) <<unique>>
+    nombre : varchar(100)
+    **email** : varchar(100) <<unique>>
+    fecha_registro : date
+}
+
+entity "Orden" as Order {
+    * **order_id** : integer <<PK, generated>>
+    *customer_id : integer <<FK>>
+    *shipping_address_id : integer <<FK>>
+    --
+    fecha : datetime
+    estado : enum('pendiente','pagado','enviado','entregado')
+    total : decimal(10,2)
+}
+
+entity "Producto" as Product {
+    *product_id : integer <<PK, generated>>
+    *category_id : integer <<FK>>
+    --
+    codigo : varchar(20) <<unique>>
+    nombre : varchar(100)
+    precio : decimal(10,2)
+    stock : integer
+}
+
+entity "Categoria" as Category {
+    *category_id : integer <<PK, generated>>
+    --
+    nombre : varchar(50) <<unique>>
+    descripcion : text
+}
+
+entity "DetalleOrden" as OrderItem {
+    *order_item_id : integer <<PK, generated>>
+    *order_id : integer <<FK>>
+    *product_id : integer <<FK>>
+    --
+    cantidad : integer
+    precio_unitario : decimal(10,2)
+}
+
+entity "Direccion" as Address {
+    *address_id : integer <<PK, generated>>
+    *customer_id : integer <<FK>>
+    --
+    calle : varchar(100)
+    ciudad : varchar(50)
+    codigo_postal : varchar(10)
+    principal : boolean
+}
+
+' Relaciones con todos los tipos posibles
+Customer ||--o{ Order : "realiza"
+Customer ||--o{ Address : "tiene"
+
+Order ||--|{ OrderItem : "contiene"
+Product }o--|{ OrderItem : "incluido en"
+
+Product }|--|| Category : "pertenece a"
+
+' Relación many-to-many implícita a través de OrderItem
+' (Producto puede estar en muchas Ordenes y Orden puede tener muchos Productos)
+
+' Relación uno a uno opcional
+Order |o--|| Address : "envío a" as shipping_address
+
+' Notas y comentarios
+note right of Customer
+    Un cliente puede tener
+    cero o más órdenes
+    y una o más direcciones.
+end note
+
+note left of Product
+    Los productos pueden
+    pertenecer exactamente
+    a una categoría.
+end note
+
+note bottom of OrderItem
+    Esta entidad resuelve
+    la relación many-to-many
+    entre Producto y Orden.
+    Contiene las FK a
+    Order y Product.
+end note
+
+@enduml
