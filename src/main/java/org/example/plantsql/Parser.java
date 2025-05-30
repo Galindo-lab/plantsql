@@ -50,7 +50,7 @@ public class Parser {
         Token currentToken = tokens.get(tokenIndex);
 
         if (expected != currentToken.getType()) {
-            String message = String.format("Se esperaba: '%s' y se encontró: '%s'", expected.name(), currentToken.getType().name());
+            String message = String.format("Se esperaba: '%s' y se encontró: '%s'", expected, currentToken);
             ex = new SyntaxExeption(message);
             return false;
         }
@@ -138,14 +138,17 @@ public class Parser {
 
             // entity Customer { <Attribs> }
             if (match(IDENTIFIER)) {
+
                 tableName = tokens.get(tokenIndex - 1).getValue();
                 symbolTable.addTable(tableName);
             }
+
 
             // entity "Orden" as Order { <Attribs> }
             if (match(STRING)
                     && match(AS)
                     && match(IDENTIFIER)) {
+
                 tableName = tokens.get(tokenIndex - 1).getValue();
                 symbolTable.addTable(tableName);
             }
@@ -153,8 +156,10 @@ public class Parser {
             if (match(LBRACKET)
                     && entityBody(tableName)
                     && match(RBRACKET)) {
+
                 return true;
             }
+
         }
 
         return false;
@@ -162,12 +167,12 @@ public class Parser {
 
 
     private Boolean entityBody(String tableName) throws SemanticException {
+
         String[] pkAttributes = new String[2];
         pkAttributes[0] = ""; // pkName
         pkAttributes[1] = ""; // pkType
 
         if (attrib(pkAttributes) && match(HLINE)) {
-
             symbolTable.addPrimaryKey(tableName, pkAttributes[0], pkAttributes[1]);
 
             while (attrib(pkAttributes)) ;
@@ -180,15 +185,27 @@ public class Parser {
 
     private Boolean attrib(String[] pkAttributes) {
 
-
         // astericos al inicio
+
+        System.out.println(tokens.get(tokenIndex).getValue());
         boolean mandatory = match(MANDATORY);
+        System.out.println(tokens.get(tokenIndex).getValue());
 
         // <IDENTIFIER>:<TYPE>
-        if (match(IDENTIFIER) && match(COLON) && (match(TYPE) || match(IDENTIFIER))) {
+        if (match(IDENTIFIER) && match(COLON) && (match(TYPE) || match(IDENTIFIER) ) ) {
+            // System.out.println(tokens.get(tokenIndex-1).getValue());
 
             pkAttributes[0] = tokens.get(tokenIndex - 3).getValue(); // pkName
             pkAttributes[1] = tokens.get(tokenIndex - 1).getValue(); // pkType
+
+            if ( tokens.get(tokenIndex - 1).getType() == TokenType.IDENTIFIER ) {
+                try {
+                    symbolTable.getPrimaryKey(tokens.get(tokenIndex-1).getValue());
+                } catch (SemanticException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
 
             // << <MODIFIER> >>
             if (match(LGUILLEMET) && match(MODIFIER) && match(RGUILLEMET) && match(LGUILLEMET)) {

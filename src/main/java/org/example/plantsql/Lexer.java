@@ -24,8 +24,10 @@ public class Lexer {
         types.put(STRING, "\".*\"");
         types.put(AS, "as");
         types.put(MODIFIER, "FK|unique|generated");
-        types.put(TYPE, "integer|float|string|datetime|timestamp|date");
+        types.put(TYPE, "integer|float|varchar\\(\\d+\\)|datetime|timestamp|date|boolean");
         types.put(RELATION, "[|}](?:[o|]*-[o|-]*)+[{|][|}]?");
+        types.put(LPAREN, "\\(");   // Paréntesis izquierdo
+        types.put(RPAREN, "\\)");   // Paréntesis derecho
         types.put(LBRACKET, "\\{");
         types.put(RBRACKET, "\\}");
         types.put(BOLD, "\\*\\*");

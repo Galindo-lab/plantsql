@@ -5,7 +5,7 @@ entity Customer {
     --
     **dni** : string <<unique>>
     nombre : string
-    **email** : string <<unique>
+    **email** : string <<unique>>
     fecha_registro : date
 }
 

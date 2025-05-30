@@ -3,11 +3,24 @@
 entity Customer {
     *customer_id : integer <<generated>>
     --
-    **dni** : string <<unique>>
-    nombre : string
-    **email** : string <<unique>>
+    **dni** : varchar(10) <<unique>>
+    nombre : varchar(9)
+    **email** : varchar(7) <<unique>>
     fecha_registro : date
 }
+
+
+
+entity "Direccion" as Address {
+    *address_id : integer
+    --
+    *customer_id : Customer <<FK>>
+    calle : varchar(6)
+    ciudad : varchar(5)
+    codigo_postal : varchar(4)
+    principal : boolean
+}
+
 
 entity "Orden" as Orderp {
     * **orderp_id** : integer <<generated>>
@@ -15,61 +28,10 @@ entity "Orden" as Orderp {
     *customer_id : Customer <<FK>>
     *shipping_address_id : Address <<FK>>
     fecha : datetime
-    estado : text
+    estado : varchar(10)
     total : float
 }
 
-entity "Producto" as Product {
-    *product_id : integer <<generated>>
-    --
-    *category_id : Category <<FK>>
-    codigo : string <<unique>>
-    nombre : string
-    precio : float
-    stock : integer
-}
-
-entity "Categoria" as Category {
-    *category_id : integer <<generated>>
-    --
-    nombre : string <<unique>>
-    descripcion : text
-}
-
-entity "DetalleOrden" as OrderItem {
-    *order_item_id : integer <<generated>>
-    --
-    *order_id : Orderp <<FK>>
-    *product_id : Product <<FK>>
-    cantidad : integer
-    precio_unitario : float
-}
-
-entity "Direccion" as Address {
-    *address_id : integer
-    --
-    *customer_id : Customer <<FK>>
-    calle : string
-    ciudad : string
-    codigo_postal : string
-    principal : boolean
-}
-
-
-' Relaciones con todos los tipos posibles
-Customer ||--o{ Orderp : "realiza"
-Customer ||--o{ Address : "tiene"
-
-Orderp ||--|{ OrderItem : "contiene"
-Product }o--|{ OrderItem : "incluido en"
-
-Product }|--|| Category : "pertenece a"
-
-' Relación many-to-many implícita a través de OrderItem
-' (Producto puede estar en muchas Ordenes y Orden puede tener muchos Productos)
-
-' Relación uno a uno opcional
-Orderp |o--|| Address : "envío a"
 
 
 @enduml

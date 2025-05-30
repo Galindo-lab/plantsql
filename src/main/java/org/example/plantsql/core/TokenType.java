@@ -22,4 +22,6 @@ public enum TokenType {
     RELATION,
     ERROR,
     SPACE,
+    LPAREN,
+    RPAREN,
 }
